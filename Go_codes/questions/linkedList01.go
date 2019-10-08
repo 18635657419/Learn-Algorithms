@@ -41,3 +41,67 @@ func LinkExistLoop(l *dataStruct.LinkedList) bool  {
 	}
 	return false
 }
+
+func getMeetingNode(l *dataStruct.LinkedList) *dataStruct.Node  {
+	fast,slow := l.Head,l.Head
+	for slow != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+		//节点相遇
+		if slow == fast {
+			return slow
+		}
+	}
+	return nil
+}
+
+// 找到环的入口
+func GetEntryNodeOfLoop(l *dataStruct.LinkedList) *dataStruct.Node  {
+	meetingNode := getMeetingNode(l)
+	if meetingNode == nil {
+		return  nil
+	}
+	first,sencond := meetingNode,l.Head
+	for first != sencond {
+		first = first.Next
+		sencond = sencond.Next
+	}
+	return sencond
+}
+
+func GetLoopLen(l *dataStruct.LinkedList) int  {
+	if l.Head == nil {
+		return 0
+	}
+	slow,fast := l.Head,l.Head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+		if fast == slow {
+			break
+		}
+	}
+
+	slow = slow.Next
+	fast = fast.Next.Next
+	lens := 1
+	for fast != slow {
+		slow = slow.Next
+		fast = fast.Next.Next
+		lens ++
+	}
+	return  lens
+}
+//翻转单链表 三个指针 pre current next
+// 第一次让prev = nil 然后每次调整current的指向
+func ReverseList(l *dataStruct.LinkedList)  {
+	current := l.Head
+	var prev *dataStruct.Node = nil
+	for current != nil {
+		next := current.Next
+		current.Next = prev
+		prev = current
+		current =	next
+	}
+	l.Head = prev
+}
